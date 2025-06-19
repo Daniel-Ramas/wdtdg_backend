@@ -74,3 +74,7 @@ INSTALLED_APPS += ["django_extensions"]
 CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# Test user settings
+TEST_USER_EMAIL = env("TEST_USER_EMAIL", default="test@example.com")
+TEST_USER_PASSWORD = env("TEST_USER_PASSWORD", default="testpass123")

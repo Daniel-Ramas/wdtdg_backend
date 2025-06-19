@@ -88,6 +88,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "wdtdg_backend.users",
+    "journal",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -345,11 +346,18 @@ SOCIALACCOUNT_FORMS = {"signup": "wdtdg_backend.users.forms.UserSocialSignupForm
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# Add these settings
+REST_AUTH = {
+    "USE_JWT": False,
+    "TOKEN_MODEL": "rest_framework.authtoken.models.Token",
+    "TOKEN_CREATOR": "dj_rest_auth.utils.default_create_token",
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup

@@ -1,0 +1,5 @@
+<form id="journalentry-form" method="post" enctype="multipart/form-data" hx-post="." hx-target="#journalentry-form-container" hx-swap="outerHTML">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form> 
