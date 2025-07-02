@@ -1,6 +1,28 @@
-<div class="alert alert-success">
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
     Journal entry created successfully!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
-<div>
-    <strong>Content:</strong> {{ entry.content }}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Entry Details</h5>
+    </div>
+    <div class="card-body">
+        <p class="card-text"><strong>Content:</strong> {{ entry.content }}</p>
+        <p class="card-text"><strong>Date:</strong> {{ entry.date }}</p>
+        <p class="card-text"><strong>Type:</strong> {{ entry.entry_type|title }}</p>
+        {% if entry.irl_mode %}
+            <span class="badge bg-info">IRL Mode</span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <button class="btn btn-outline-primary" 
+            hx-get="{% url 'journalentry_htmx_form' %}" 
+            hx-target="closest .container"
+            hx-swap="innerHTML">
+        Create Another Entry
+    </button>
 </div> 

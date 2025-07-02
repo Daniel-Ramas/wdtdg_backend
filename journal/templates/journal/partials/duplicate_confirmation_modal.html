@@ -1,0 +1,82 @@
+<div class="modal fade show" id="duplicateModal" tabindex="-1" style="display: block;" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="duplicateModalLabel">Entry Already Exists</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    You already have a {{ existing_entry.entry_type|title }} entry for {{ existing_entry.date }}.
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Existing Entry:</h6>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text"><strong>Content:</strong> {{ existing_entry.content|default:"No content" }}</p>
+                                <p class="card-text"><strong>IRL Mode:</strong> {% if existing_entry.irl_mode %}Yes{% else %}No{% endif %}</p>
+                                <p class="card-text"><strong>Created:</strong> {{ existing_entry.created_at|date:"M d, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>New Entry:</h6>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text"><strong>Content:</strong> {{ new_data.content|default:"No content" }}</p>
+                                <p class="card-text"><strong>IRL Mode:</strong> {% if new_data.irl_mode %}Yes{% else %}No{% endif %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="mt-3">Would you like to replace the existing entry with your new one?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" 
+                        hx-get="{% url 'journalentry_htmx_form' %}" 
+                        hx-target="#journalentry-form-container"
+                        hx-swap="outerHTML">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-warning" 
+                        hx-post="{% url 'journalentry_htmx_form' %}"
+                        hx-target="#journalentry-form-container"
+                        hx-swap="outerHTML"
+                        hx-vals='{"replace_existing": "true", "existing_entry_id": "{{ existing_entry.id }}", "content": "{{ new_data.content|escapejs }}", "irl_mode": "{{ new_data.irl_mode|yesno:'true,false' }}"}'
+                        onclick="removeModal()">
+                    Replace Existing Entry
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal backdrop -->
+<div class="modal-backdrop fade show"></div>
+
+<script>
+function removeModal() {
+    // Remove modal and backdrop
+    const modal = document.getElementById('duplicateModal');
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (modal) modal.remove();
+    if (backdrop) backdrop.remove();
+    
+    // Remove modal-open class from body
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+}
+
+// Auto-focus the modal
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('duplicateModal');
+    if (modal) {
+        modal.focus();
+    }
+});
+</script> 
