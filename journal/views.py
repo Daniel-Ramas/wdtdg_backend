@@ -183,3 +183,42 @@ class ReflectionSummaryViewSet(viewsets.ModelViewSet):
 
 
 # Create your views here.
+
+class JournalEntryListView(LoginRequiredMixin, ListView):
+    model = JournalEntry
+    template_name = "journal/journal_entry_list.html"
+    context_object_name = "entries"
+    paginate_by = 20
+
+    def get_queryset(self):
+        return JournalEntry.objects.filter(user=self.request.user).order_by(
+            "-date", "-created_at"
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["entry_types"] = JournalEntry.ENTRY_TYPES
+
+        # Add entry type counts
+        user_entries = JournalEntry.objects.filter(user=self.request.user)
+        context["text_count"] = user_entries.filter(entry_type="text").count()
+        context["voice_count"] = user_entries.filter(entry_type="voice").count()
+        context["media_count"] = user_entries.filter(
+            entry_type__in=["photo", "video"]
+        ).count()
+
+        return context
+
+
+class JournalEntryEditView(LoginRequiredMixin, UpdateView):
+    model = JournalEntry
+    template_name = "journal/journal_entry_edit.html"
+    form_class = JournalEntryForm
+    success_url = "/journal/"
+
+    def get_queryset(self):
+        return JournalEntry.objects.filter(user=self.request.user)
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)

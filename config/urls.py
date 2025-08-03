@@ -23,7 +23,7 @@ urlpatterns = [
     path("users/", include("wdtdg_backend.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
-    # ...
+    path("journal/", include("journal.urls")),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
@@ -41,7 +41,6 @@ urlpatterns += [
         name="api-docs",
     ),
     path("api/auth/google/", google_auth_callback, name="google-auth-callback"),
-    path("journal/", include("journal.urls")),
 ]
 
 if settings.DEBUG:

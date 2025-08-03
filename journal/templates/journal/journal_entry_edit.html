@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Journal Entry{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 mb-1">Edit Journal Entry</h1>
+                    <p class="text-muted mb-0">Update your journal entry from {{ object.date|date:"F j, Y" }}</p>
+                </div>
+                <a href="{% url 'journal_entry_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Back to Journal
+                </a>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
+                            <input type="date" name="{{ form.date.name }}" id="{{ form.date.id_for_label }}" class="form-control" value="{{ form.date.value|date:'Y-m-d' }}">
+                            {% if form.date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.date.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.entry_type.id_for_label }}" class="form-label">{{ form.entry_type.label }}</label>
+                            <select name="{{ form.entry_type.name }}" id="{{ form.entry_type.id_for_label }}" class="form-select">
+                                {% for choice in form.entry_type.field.choices %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == form.entry_type.value %}selected{% endif %}>
+                                        {{ choice.1 }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.entry_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.entry_type.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.content.id_for_label }}" class="form-label">{{ form.content.label }}</label>
+                            <textarea name="{{ form.content.name }}" id="{{ form.content.id_for_label }}" class="form-control" rows="6">{{ form.content.value|default:'' }}</textarea>
+                            {% if form.content.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.content.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.media.id_for_label }}" class="form-label">{{ form.media.label }}</label>
+                            {% if object.media %}
+                                <div class="mb-2">
+                                    <small class="text-muted">Current file: {{ object.media.name }}</small>
+                                </div>
+                            {% endif %}
+                            <input type="file" name="{{ form.media.name }}" id="{{ form.media.id_for_label }}" class="form-control">
+                            <small class="form-text text-muted">Leave empty to keep the current file</small>
+                            {% if form.media.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.media.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="{{ form.irl_mode.name }}" id="{{ form.irl_mode.id_for_label }}" class="form-check-input" {% if form.irl_mode.value %}checked{% endif %}>
+                            <label for="{{ form.irl_mode.id_for_label }}" class="form-check-label">
+                                {{ form.irl_mode.label }}
+                            </label>
+                            {% if form.irl_mode.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.irl_mode.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'journal_entry_list' %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                            <div class="btn-group" role="group">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Update Entry
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Entry Preview -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Current Entry Preview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            {% if object.entry_type == "text" %}
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-pencil text-primary fs-5"></i>
+                                </div>
+                            {% elif object.entry_type == "voice" %}
+                                <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-mic text-success fs-5"></i>
+                                </div>
+                            {% elif object.entry_type == "photo" %}
+                                <div class="bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-camera text-info fs-5"></i>
+                                </div>
+                            {% elif object.entry_type == "video" %}
+                                <div class="bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-camera-video text-warning fs-5"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ object.get_entry_type_display }} Entry</h6>
+                            <small class="text-muted">{{ object.date|date:"F j, Y" }}</small>
+                        </div>
+                        {% if object.irl_mode %}
+                            <span class="badge bg-danger ms-auto">IRL Mode</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if object.content %}
+                        <p class="card-text">{{ object.content|linebreaks }}</p>
+                    {% endif %}
+                    
+                    {% if object.media %}
+                        <div class="mt-3">
+                            {% if object.entry_type == "photo" %}
+                                <img src="{{ object.media.url }}" alt="Journal photo" class="img-fluid rounded" style="max-height: 200px;">
+                            {% elif object.entry_type == "video" %}
+                                <video controls class="w-100 rounded" style="max-height: 200px;">
+                                    <source src="{{ object.media.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% elif object.entry_type == "voice" %}
+                                <audio controls class="w-100">
+                                    <source src="{{ object.media.url }}" type="audio/mpeg">
+                                    Your browser does not support the audio tag.
+                                </audio>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
