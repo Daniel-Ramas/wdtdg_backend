@@ -1,85 +1,154 @@
-# wdtdg-backend
+# Where Did The Day Go? (WDTDG)
 
-Where did the day go?
+A personal journaling application built with Django REST API backend and Vue 3 SPA frontend.
 
-[![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+## Architecture
 
-License: MIT
+This project uses a modern full-stack architecture:
 
-## Settings
+- **Backend**: Django REST API with PostgreSQL
+- **Frontend**: Vue 3 SPA with Naive UI components
+- **Authentication**: Token-based authentication
+- **Database**: PostgreSQL
+- **Development**: Docker Compose for easy setup
 
-Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getting-started/settings.html).
+## Features
 
-## Basic Commands
+- 📝 **Text Entries**: Write your thoughts and reflections
+- 🎤 **Voice Entries**: Record audio journal entries
+- 📸 **Photo Entries**: Upload and store photos
+- 🎥 **Video Entries**: Upload and store videos
+- 🔒 **Secure**: Private, user-authenticated entries
+- 📊 **Statistics**: Track your journaling habits
+- 🎨 **Modern UI**: Clean, responsive interface with Naive UI
 
-### Setting Up Your Users
+## Quick Start
 
-- To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+### Prerequisites
 
-- To create a **superuser account**, use this command:
+- Docker and Docker Compose
+- Node.js 20+ (for frontend development)
+- Python 3.12+ (for backend development)
 
-      $ python manage.py createsuperuser
+### Backend Setup
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
-
-### Type checks
-
-Running type checks with mypy:
-
-    $ mypy wdtdg_backend
-
-### Test coverage
-
-To run the tests, check your test coverage, and generate an HTML coverage report:
-
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
-
-#### Running tests with pytest
-
-    $ pytest
-
-### Live reloading and Sass CSS compilation
-
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally.html#using-webpack-or-gulp).
-
-### Celery
-
-This app comes with Celery.
-
-To run a celery worker:
-
+1. Clone the repository:
 ```bash
+git clone <repository-url>
 cd wdtdg_backend
-celery -A config.celery_app worker -l info
 ```
 
-Please note: For Celery's import magic to work, it is important _where_ the celery commands are run. If you are in the same folder with _manage.py_, you should be right.
-
-To run [periodic tasks](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html), you'll need to start the celery beat scheduler service. You can start it as a standalone process:
-
+2. Set up environment variables:
 ```bash
-cd wdtdg_backend
-celery -A config.celery_app beat
+cp .envs/.local .env
 ```
 
-or you can embed the beat service inside a worker with the `-B` option (not recommended for production use):
-
+3. Start the backend services:
 ```bash
-cd wdtdg_backend
-celery -A config.celery_app worker -B -l info
+docker-compose -f docker-compose.local.yml up -d
+```
+
+4. Run migrations:
+```bash
+docker-compose -f docker-compose.local.yml exec django python manage.py migrate
+```
+
+5. Create a superuser:
+```bash
+docker-compose -f docker-compose.local.yml exec django python manage.py createsuperuser
+```
+
+The Django API will be available at `http://localhost:8000`
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+The Vue frontend will be available at `http://localhost:3000`
+
+## Development
+
+### Backend Development
+
+The Django backend provides a REST API with the following endpoints:
+
+- `GET /api/journal-entries/` - List journal entries
+- `POST /api/journal-entries/` - Create new entry
+- `GET /api/journal-entries/{id}/` - Get specific entry
+- `PUT /api/journal-entries/{id}/` - Update entry
+- `DELETE /api/journal-entries/{id}/` - Delete entry
+- `POST /api/auth-token/` - Login and get token
+
+### Frontend Development
+
+The Vue frontend includes:
+
+- **Home Page**: Welcome and feature overview
+- **Journal List**: View all entries with statistics
+- **Entry Editor**: Create and edit journal entries
+- **Login Page**: User authentication
+
+### API Documentation
+
+Access the interactive API documentation at:
+- Swagger UI: `http://localhost:8000/api/docs/`
+- API Schema: `http://localhost:8000/api/schema/`
+
+## Project Structure
+
+```
+wdtdg_backend/
+├── config/                 # Django settings and configuration
+├── journal/                # Journal app with models and API views
+├── wdtdg_backend/          # Main Django project
+├── frontend/               # Vue 3 frontend application
+│   ├── src/
+│   │   ├── views/          # Page components
+│   │   ├── stores/         # Pinia state management
+│   │   ├── services/       # API services
+│   │   └── router/         # Vue Router configuration
+│   └── package.json
+├── docker-compose.local.yml
+└── README.md
 ```
 
 ## Deployment
 
-The following details how to deploy this application.
+### Production
 
-### Heroku
+For production deployment:
 
-See detailed [cookiecutter-django Heroku documentation](https://cookiecutter-django.readthedocs.io/en/latest/3-deployment/deployment-on-heroku.html).
+1. Build the frontend:
+```bash
+cd frontend
+npm run build
+```
 
-### Docker
+2. Deploy the Django backend with the built frontend static files.
 
-See detailed [cookiecutter-django Docker documentation](https://cookiecutter-django.readthedocs.io/en/latest/3-deployment/deployment-with-docker.html).
+3. Configure environment variables for production settings.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
