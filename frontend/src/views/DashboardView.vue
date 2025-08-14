@@ -73,8 +73,8 @@ const currentStreak = 7
 <template>
   <AppLayout>
     <!-- Welcome Section -->
-    <n-card class="welcome-card">
-      <n-space vertical size="medium">
+    <n-card style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #bae6fd;">
+      <n-space vertical size="medium" style="padding: 32px;">
         <n-h2 style="margin: 0; color: #18a058;">
           Welcome back! 👋
         </n-h2>
@@ -233,13 +233,4 @@ const currentStreak = 7
   </AppLayout>
 </template>
 
-<style scoped>
-.welcome-card {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border: 1px solid #bae6fd;
-}
 
-.welcome-card .n-card__content {
-  padding: 32px;
-}
-</style>

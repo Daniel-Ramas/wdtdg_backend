@@ -272,6 +272,4 @@ onMounted(async () => {
   </AppLayout>
 </template>
 
-<style scoped>
-/* Component-specific styles can go here */
-</style> 
+ 

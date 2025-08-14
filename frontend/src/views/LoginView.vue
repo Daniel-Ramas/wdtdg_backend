@@ -69,7 +69,7 @@ const goToHome = () => {
 </script>
 
 <template>
-  <n-layout>
+  <n-layout style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
     <n-layout-content style="padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 100vh;">
       <n-card style="width: 400px;">
         <n-space vertical size="large">
@@ -136,8 +136,4 @@ const goToHome = () => {
   </n-layout>
 </template>
 
-<style scoped>
-.n-layout-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-</style> 
+ 
