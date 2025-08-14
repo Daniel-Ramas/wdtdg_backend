@@ -43,6 +43,10 @@ const goToJournal = () => {
   router.push('/journal')
 }
 
+const goToDashboard = () => {
+  router.push('/dashboard')
+}
+
 const goToLogin = () => {
   router.push('/login')
 }
@@ -184,11 +188,11 @@ onMounted(() => {
             </n-p>
             
             <n-space class="hero-actions">
-              <n-button @click="goToJournal" type="primary" size="large" v-if="authStore.isAuthenticated" class="cta-button">
+              <n-button @click="goToDashboard" type="primary" size="large" v-if="authStore.isAuthenticated" class="cta-button">
                 <template #icon>
                   <n-icon><BookOutline /></n-icon>
                 </template>
-                Start Journaling
+                Go to Dashboard
               </n-button>
               <n-button @click="goToLogin" type="primary" size="large" v-else class="cta-button">
                 <template #icon>
@@ -323,11 +327,11 @@ onMounted(() => {
                 </template>
                 Create Free Account
               </n-button>
-              <n-button @click="goToJournal" type="primary" size="large" v-else class="cta-button">
+              <n-button @click="goToDashboard" type="primary" size="large" v-else class="cta-button">
                 <template #icon>
                   <n-icon><BookOutline /></n-icon>
                 </template>
-                Continue Journaling
+                Go to Dashboard
               </n-button>
             </n-space>
           </div>
