@@ -1,10 +1,17 @@
 <script setup>
 import { NConfigProvider, NMessageProvider, NNotificationProvider, NDialogProvider, NLoadingBarProvider } from 'naive-ui'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const theme = ref(null) // null for light theme
+
+onMounted(async () => {
+  // Check authentication status when app starts
+  await authStore.checkAuth()
+})
 </script>
 
 <template>

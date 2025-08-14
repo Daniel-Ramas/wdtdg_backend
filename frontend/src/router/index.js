@@ -38,6 +38,9 @@ router.beforeEach((to, from, next) => {
   
   if (to.meta.requiresAuth && !token) {
     next('/login')
+  } else if (to.path === '/login' && token) {
+    // Redirect authenticated users away from login page
+    next('/journal')
   } else {
     next()
   }

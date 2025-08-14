@@ -15,10 +15,11 @@ import {
 } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import { authAPI } from '@/services/api'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const message = useMessage()
+const authStore = useAuthStore()
 
 const formRef = ref(null)
 const loading = ref(false)
@@ -47,13 +48,16 @@ const handleLogin = async () => {
     await formRef.value?.validate()
     loading.value = true
     
-    const response = await authAPI.login(formModel.value)
-    localStorage.setItem('authToken', response.data.token)
+    const result = await authStore.login(formModel.value)
     
-    message.success('Login successful')
-    router.push('/journal')
+    if (result.success) {
+      message.success('Login successful')
+      router.push('/journal')
+    } else {
+      message.error(result.error)
+    }
   } catch (error) {
-    message.error(error.response?.data?.non_field_errors?.[0] || 'Login failed')
+    message.error('Login failed')
   } finally {
     loading.value = false
   }

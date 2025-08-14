@@ -1,65 +1,75 @@
-# WDTDG Frontend
+# Frontend - Where Did The Day Go?
 
-Vue 3 SPA frontend for the "Where Did The Day Go?" journal application.
+A Vue.js frontend for the personal journaling application.
 
 ## Features
 
-- **Vue 3** with Composition API
-- **Naive UI** component library
-- **Vue Router** for navigation
-- **Pinia** for state management
-- **Axios** for API communication
-- **Day.js** for date formatting
-- **Vite** for fast development and building
+- **Authentication System**: Login/logout functionality with secure token management
+- **Responsive Design**: Built with Naive UI components for a modern, accessible interface
+- **Journal Management**: Create, edit, and manage journal entries
+- **User Menu**: Dropdown menu with profile, settings, and other features (coming soon)
 
-## Setup
+## New Features Added
 
-1. Install dependencies:
-```bash
-npm install
-```
+### Authentication & Menu System
+- **Login/Logout**: Full authentication flow with the backend API
+- **User Menu**: Dropdown menu button that adapts based on authentication status
+- **Protected Routes**: Journal pages require authentication
+- **State Management**: Centralized auth state using Pinia store
 
-2. Start the development server:
-```bash
-npm run dev
-```
-
-The frontend will be available at `http://localhost:3000`
+### Menu Options
+- **Authenticated Users**:
+  - Profile (coming soon)
+  - Settings (coming soon)
+  - My Journal
+  - Logout
+- **Unauthenticated Users**:
+  - Login
 
 ## Development
 
-- **Development server**: `npm run dev`
-- **Build for production**: `npm run build`
-- **Preview production build**: `npm run preview`
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
 
 ## Project Structure
 
 ```
 src/
-├── components/          # Reusable Vue components
-├── views/              # Page components
-│   ├── HomeView.vue    # Home page
-│   ├── JournalListView.vue  # Journal entries list
-│   ├── JournalEditView.vue  # Create/edit journal entry
-│   └── LoginView.vue   # Login page
-├── stores/             # Pinia stores
-│   └── journal.js      # Journal state management
-├── services/           # API services
-│   └── api.js          # API client and endpoints
-├── router/             # Vue Router configuration
-│   └── index.js        # Route definitions
-├── App.vue             # Root component
-└── main.js             # Application entry point
+├── stores/
+│   ├── auth.js          # Authentication state management
+│   └── counter.js       # Example store
+├── views/
+│   ├── HomeView.vue     # Home page with menu
+│   ├── LoginView.vue    # Login form
+│   └── Journal*.vue     # Journal management views
+├── services/
+│   └── api.js          # API communication
+└── router/
+    └── index.js        # Route configuration with auth guards
 ```
 
-## API Integration
+## Authentication Flow
 
-The frontend communicates with the Django backend API at `http://localhost:8000/api/`. The Vite dev server is configured to proxy API requests to the backend.
+1. User visits home page
+2. If not authenticated, sees "Get Started" button and "Account" menu
+3. Clicking "Get Started" or "Account" → Login takes them to login page
+4. After successful login, redirected to journal page
+5. Menu changes to show full options including logout
+6. Protected routes automatically redirect to login if not authenticated
 
-## Authentication
+## Technologies Used
 
-The app uses token-based authentication. Users log in through the `/login` page, and the token is stored in localStorage. Protected routes automatically redirect to login if no token is present.
-
-## Styling
-
-The app uses Naive UI components with a clean, modern design. The theme can be easily customized by modifying the theme configuration in `App.vue`.
+- **Vue 3** with Composition API
+- **Naive UI** for components
+- **Pinia** for state management
+- **Vue Router** with authentication guards
+- **Axios** for API communication
+- **Vite** for build tooling

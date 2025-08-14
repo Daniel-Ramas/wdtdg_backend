@@ -39,9 +39,6 @@ api.interceptors.response.use(
 // Auth API
 export const authAPI = {
   login: (credentials) => api.post('/auth-token/', credentials),
-  logout: () => {
-    localStorage.removeItem('authToken')
-  },
 }
 
 // Journal API

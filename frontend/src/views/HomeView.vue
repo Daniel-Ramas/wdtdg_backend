@@ -1,12 +1,103 @@
 <script setup>
-import { NLayout, NLayoutHeader, NLayoutContent, NButton, NSpace, NCard, NText, NH1, NP } from 'naive-ui'
+import { 
+  NLayout, 
+  NLayoutHeader, 
+  NLayoutContent, 
+  NButton, 
+  NSpace, 
+  NCard, 
+  NText, 
+  NH1, 
+  NP,
+  NDropdown,
+  NIcon,
+  NAvatar,
+  NMenu,
+  useMessage
+} from 'naive-ui'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { ref, computed, h } from 'vue'
+import { MenuOutline, PersonOutline, LogOutOutline, SettingsOutline, BookOutline } from '@vicons/ionicons5'
 
 const router = useRouter()
+const authStore = useAuthStore()
+const message = useMessage()
 
 const goToJournal = () => {
   router.push('/journal')
 }
+
+const goToLogin = () => {
+  router.push('/login')
+}
+
+const handleLogout = () => {
+  authStore.logout()
+  message.success('Logged out successfully')
+  router.push('/')
+}
+
+const handleMenuSelect = (key) => {
+  switch (key) {
+    case 'profile':
+      // TODO: Navigate to profile page
+      message.info('Profile feature coming soon')
+      break
+    case 'settings':
+      // TODO: Navigate to settings page
+      message.info('Settings feature coming soon')
+      break
+    case 'journal':
+      goToJournal()
+      break
+    case 'logout':
+      handleLogout()
+      break
+  }
+}
+
+// Menu options for authenticated users
+const authenticatedMenuOptions = [
+  {
+    label: 'Profile',
+    key: 'profile',
+    icon: () => h(PersonOutline)
+  },
+  {
+    label: 'Settings',
+    key: 'settings',
+    icon: () => h(SettingsOutline)
+  },
+  {
+    label: 'My Journal',
+    key: 'journal',
+    icon: () => h(BookOutline)
+  },
+  {
+    type: 'divider'
+  },
+  {
+    label: 'Logout',
+    key: 'logout',
+    icon: () => h(LogOutOutline)
+  }
+]
+
+// Menu options for unauthenticated users
+const unauthenticatedMenuOptions = [
+  {
+    label: 'Login',
+    key: 'login',
+    icon: () => h(PersonOutline)
+  }
+]
+
+const menuOptions = computed(() => {
+  return authStore.isAuthenticated ? authenticatedMenuOptions : unauthenticatedMenuOptions
+})
+
+
 </script>
 
 <template>
@@ -15,9 +106,26 @@ const goToJournal = () => {
       <n-space justify="space-between" align="center">
         <n-h1 style="margin: 0; font-size: 24px;">Where Did The Day Go?</n-h1>
         <n-space>
-          <n-button @click="goToJournal" type="primary">
+          <n-button @click="goToJournal" type="primary" v-if="authStore.isAuthenticated">
             My Journal
           </n-button>
+          
+          <!-- Menu dropdown -->
+          <n-dropdown 
+            :options="menuOptions" 
+            @select="handleMenuSelect"
+            trigger="click"
+            placement="bottom-end"
+          >
+            <n-button quaternary>
+              <template #icon>
+                <n-icon>
+                  <MenuOutline />
+                </n-icon>
+              </template>
+              {{ authStore.isAuthenticated ? 'Menu' : 'Account' }}
+            </n-button>
+          </n-dropdown>
         </n-space>
       </n-space>
     </n-layout-header>
@@ -44,9 +152,14 @@ const goToJournal = () => {
             </n-space>
           </n-space>
           
-          <n-button @click="goToJournal" type="primary" size="large">
-            Start Journaling
-          </n-button>
+          <n-space>
+            <n-button @click="goToJournal" type="primary" size="large" v-if="authStore.isAuthenticated">
+              Start Journaling
+            </n-button>
+            <n-button @click="goToLogin" type="primary" size="large" v-else>
+              Get Started
+            </n-button>
+          </n-space>
         </n-space>
       </n-card>
     </n-layout-content>
