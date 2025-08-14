@@ -39,9 +39,9 @@ onMounted(async () => {
       <n-dialog-provider>
         <n-notification-provider>
           <n-message-provider>
-            <div id="app" :class="{ 'dark-mode': isDark }">
+            <div id="app" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; height: 100vh;">
               <!-- Theme Toggle Button -->
-              <div class="theme-toggle">
+              <div style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
                 <n-button 
                   quaternary 
                   circle 
@@ -66,39 +66,3 @@ onMounted(async () => {
     </n-loading-bar-provider>
   </n-config-provider>
 </template>
-
-<style>
-#app {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
-}
-
-.theme-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  transition: background-color 0.3s ease;
-  background-color: #ffffff;
-}
-
-/* Dark mode body background */
-body.dark-mode {
-  background-color: #1a1a1a;
-}
-
-
-</style>
