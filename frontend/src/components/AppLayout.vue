@@ -29,15 +29,20 @@ import {
   TrendingUpOutline,
   CalendarOutline,
   PersonOutline,
-  LogOutOutline
+  LogOutOutline,
+  SunnyOutline,
+  MoonOutline
 } from '@vicons/ionicons5'
 import { useRouter, useRoute } from 'vue-router'
-import { computed, ref, h } from 'vue'
+import { computed, ref, h, inject } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+
+// Inject theme from parent component
+const theme = inject('theme', { isDark: ref(false), toggleTheme: () => {} })
 
 const collapsed = ref(false)
 const activeKey = ref('dashboard')
@@ -58,11 +63,13 @@ const menuOptions = [
       {
         label: 'View Journal',
         key: 'journal-list',
+        icon: () => h(BookOutline),
         path: '/journal'
       },
       {
         label: 'New Entry',
         key: 'journal-new',
+        icon: () => h(AddOutline),
         path: '/journal/new'
       }
     ]
@@ -78,6 +85,26 @@ const menuOptions = [
     key: 'calendar',
     icon: () => h(CalendarOutline),
     path: '/calendar'
+  },
+  {
+    label: 'Help & Support',
+    key: 'help',
+    icon: () => h(PersonOutline),
+    href: 'https://help.wdtdg.com',
+    children: [
+      {
+        label: 'Documentation',
+        key: 'docs',
+        icon: () => h(BookOutline),
+        href: 'https://docs.wdtdg.com'
+      },
+      {
+        label: 'Contact Support',
+        key: 'contact',
+        icon: () => h(PersonOutline),
+        href: 'mailto:support@wdtdg.com'
+      }
+    ]
   }
 ]
 
@@ -151,6 +178,11 @@ const handleUserMenuSelect = (key) => {
   }
 }
 
+// Handle sidebar collapse/expand
+const handleSidebarCollapse = (collapsedState) => {
+  collapsed.value = collapsedState
+}
+
 // Helper function to find menu item by key
 const findMenuItemByKey = (items, key) => {
   for (const item of items) {
@@ -162,9 +194,19 @@ const findMenuItemByKey = (items, key) => {
   }
   return null
 }
+
+// Render functions for menu
+const renderLabel = (option) => {
+  return option.label;
+}
+
+const renderIcon = (option) => {
+  return option.icon();
+}
 </script>
 
 <template>
+<n-space vertical>
   <n-layout>
     <!-- Header -->
     <n-layout-header style="height: 64px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--n-border-color);">
@@ -174,7 +216,7 @@ const findMenuItemByKey = (items, key) => {
           <n-icon size="24" color="#18a058">
             <SparklesOutline />
           </n-icon>
-          <n-text strong style="font-size: 18px; color: #18a058;" v-if="!collapsed">WDTDG</n-text>
+          <n-text strong style="font-size: 18px; color: #18a058;">WDTDG</n-text>
         </n-space>
         
         <n-divider vertical />
@@ -218,6 +260,21 @@ const findMenuItemByKey = (items, key) => {
           New Entry
         </n-button>
         
+        <!-- Theme toggle -->
+        <n-button 
+          quaternary 
+          circle 
+          @click="theme.toggleTheme"
+          :title="theme.isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+        >
+          <template #icon>
+            <n-icon>
+              <SunnyOutline v-if="theme.isDark" />
+              <MoonOutline v-else />
+            </n-icon>
+          </template>
+        </n-button>
+        
         <!-- User menu -->
         <n-dropdown 
           :options="userMenuOptions" 
@@ -232,7 +289,7 @@ const findMenuItemByKey = (items, key) => {
               :src="authStore.user?.avatar"
               fallback-src="https://07akioni.icu/28"
             />
-            <n-text v-if="!collapsed">
+            <n-text>
               {{ authStore.user?.username || 'User' }}
             </n-text>
           </n-space>
@@ -244,52 +301,22 @@ const findMenuItemByKey = (items, key) => {
       <!-- Sidebar -->
       <n-layout-sider 
         :collapsed="collapsed"
-        :collapsed-width="64"
-        :width="240"
         show-trigger
-        @collapse="collapsed = true"
-        @expand="collapsed = false"
+        @collapse="handleSidebarCollapse(true)"
+        @expand="handleSidebarCollapse(false)"
         style="border-right: 1px solid var(--n-border-color);"
+        collapse-mode="width"
       >
-        <n-space vertical style="height: 100%; padding: 16px;">
           <!-- Navigation Menu -->
           <n-menu
             :collapsed="collapsed"
-            :collapsed-width="64"
-            :collapsed-icon-size="22"
             :options="menuOptions"
-            :value="activeKey"
             @update:value="handleMenuSelect"
-            style="flex: 1;"
+            :render-label="renderLabel"
+            :render-icon="renderIcon"
+            :collapsed-icon-size="22"
+            :value="activeKey"
           />
-          
-          <!-- Quick Actions -->
-          <n-space vertical size="small">
-            <n-button 
-              quaternary 
-              block
-              @click="router.push('/journal')"
-              style="justify-content: flex-start; height: 40px;"
-            >
-              <template #icon>
-                <n-icon><BookOutline /></n-icon>
-              </template>
-              View Journal
-            </n-button>
-            
-            <n-button 
-              quaternary 
-              block
-              @click="createNewEntry"
-              style="justify-content: flex-start; height: 40px;"
-            >
-              <template #icon>
-                <n-icon><AddOutline /></n-icon>
-              </template>
-              New Entry
-            </n-button>
-          </n-space>
-        </n-space>
       </n-layout-sider>
 
       <!-- Main content -->
@@ -324,4 +351,5 @@ const findMenuItemByKey = (items, key) => {
       </div>
     </n-layout-footer>
   </n-layout>
+</n-space>
 </template>

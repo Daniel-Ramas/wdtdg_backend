@@ -73,9 +73,9 @@ const currentStreak = 7
 <template>
   <AppLayout>
     <!-- Welcome Section -->
-    <n-card style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #bae6fd;">
+    <n-card style="background: var(--n-color); border: 1px solid var(--n-border-color);">
       <n-space vertical size="medium" style="padding: 32px;">
-        <n-h2 style="margin: 0; color: #18a058;">
+        <n-h2 style="margin: 0; color: var(--n-primary-color);">
           Welcome back! 👋
         </n-h2>
         <n-text depth="3" size="large">
@@ -105,7 +105,7 @@ const currentStreak = 7
           <n-statistic 
             label="Total Entries" 
             :value="journalStore.totalEntries || 0"
-            :value-style="{ color: '#18a058' }"
+            :value-style="{ color: 'var(--n-primary-color)' }"
           />
         </n-card>
       </n-grid-item>
@@ -115,7 +115,7 @@ const currentStreak = 7
           <n-statistic 
             label="Current Streak" 
             :value="currentStreak"
-            :value-style="{ color: '#f0a020' }"
+            :value-style="{ color: 'var(--n-warning-color)' }"
           />
           <n-text depth="3" size="small">days</n-text>
         </n-card>
@@ -126,7 +126,7 @@ const currentStreak = 7
           <n-statistic 
             label="Weekly Progress" 
             :value="weeklyProgress"
-            :value-style="{ color: '#2080f0' }"
+            :value-style="{ color: 'var(--n-info-color)' }"
           />
           <n-text depth="3" size="small">%</n-text>
         </n-card>
@@ -137,7 +137,7 @@ const currentStreak = 7
           <n-statistic 
             label="Monthly Goal" 
             :value="monthlyGoal"
-            :value-style="{ color: '#d03050' }"
+            :value-style="{ color: 'var(--n-error-color)' }"
           />
           <n-text depth="3" size="small">entries</n-text>
         </n-card>
@@ -153,7 +153,7 @@ const currentStreak = 7
             <n-progress 
               type="line" 
               :percentage="weeklyProgress" 
-              :color="weeklyProgress >= 80 ? '#18a058' : weeklyProgress >= 60 ? '#f0a020' : '#d03050'"
+              :color="weeklyProgress >= 80 ? 'var(--n-success-color)' : weeklyProgress >= 60 ? 'var(--n-warning-color)' : 'var(--n-error-color)'"
             />
             <n-text depth="3" size="small">
               {{ 7 - Math.floor(weeklyProgress / 14.28) }} days remaining this week
@@ -169,7 +169,7 @@ const currentStreak = 7
             <n-progress 
               type="line" 
               :percentage="Math.min((journalStore.totalEntries || 0) / monthlyGoal * 100, 100)" 
-              :color="(journalStore.totalEntries || 0) >= monthlyGoal ? '#18a058' : '#f0a020'"
+              :color="(journalStore.totalEntries || 0) >= monthlyGoal ? 'var(--n-success-color)' : 'var(--n-warning-color)'"
             />
             <n-text depth="3" size="small">
               {{ Math.max(monthlyGoal - (journalStore.totalEntries || 0), 0) }} more entries needed
